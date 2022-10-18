@@ -1,0 +1,138 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <p-toast></p-toast>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedTypes()" [disabled]="!selectedTypes || !selectedTypes.length"></button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+      <p-table #dt [value]="types" [columns]="cols" responsiveLayout="scroll"
+        [globalFilterFields]="['name']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+        [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} de {totalRecords} entrées"
+        [(selection)]="selectedTypes" selectionMode="multiple" [rowHover]="true" dataKey="id">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Gestion des Type des Articles</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Recherche..." />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th >
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="name"><div class="flex justify-content-center">Nom<p-sortIcon field="name"></p-sortIcon></div>
+            </th>
+            <th pSortableColumn="profession"><div class="flex justify-content-center">Métier<p-sortIcon field="profession"></p-sortIcon></div>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-type>
+          <tr>
+            <td style="width:10%; min-width:10rem;">
+              <p-tableCheckbox [value]="type"></p-tableCheckbox>
+            </td>
+            <td style="width:30%; min-width:10rem;">
+              <span class="p-column-title">Nom</span>
+              <div class="flex justify-content-center">{{type?.name}}</div>
+            </td>
+            <td style="width:30%; min-width:10rem;">
+              <span class="p-column-title">Métier</span>
+              <div class="flex justify-content-center">{{type?.profession?.name}}</div>
+            </td>
+            <td style="width:30%; min-width:10rem;">
+              <div class="flex justify-content-center">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                  (click)="editType(type)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteType(type)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <!-- empty table message-->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center">Aucun type trouvé.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="typeDialog" [style]="{width: '50%'}" header="Enregistrer Type" [modal]="true" class="p-fluid">
+      <div class="text-500 mb-5">Veuillez remplir tous les champs obligatoires marqués par un astérisque (*).</div>
+      <ng-template pTemplate="content">
+        <form [formGroup]="myForm">
+          <!-- ---hidden--- -->
+          <div class="field">
+            <input type="text" hidden pInputText id="code" formControlName="id" />
+          </div>
+          <!-- ---profession--- -->
+          <div class="field">
+            <label>Métier</label>
+            <p-dropdown appendTo="body" [options]="professions" placeholder="Sélectionner Métier" optionLabel="name"
+              [showClear]="true" formControlName="profession">
+            </p-dropdown>
+          </div>
+          <!-- ---title--- -->
+          <div class="field">
+            <label for="title">Nom*</label>
+            <input type="text" pInputText id="title" formControlName="name" placeholder="Nom du type" required />
+            <div *ngIf="(myForm.get('name').invalid && myForm.get('name').dirty)">
+              <small class="ng-dirty ng-invalid" *ngIf="myForm.get('name').hasError('required')">
+                Nom est obligatoire.
+              </small>
+              <small class="ng-dirty ng-invalid" *ngIf="myForm.get('name').hasError('pattern')">
+                Nom invalide.
+              </small>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <p-footer>
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Enregistrer" [disabled]="myForm.invalid" icon="pi pi-check" class="p-button-text"
+          (click)="saveType()"></button>
+      </p-footer>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteTypeDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="type">Supprimer <b>{{type.name}}</b>?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Non"
+          (click)="deleteHarborDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Oui" (click)="confirmDelete()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="deleteTypesDialog" header="Confirmer" [modal]="true" [style]="{width:'40%'}">
+      <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Supprimer Sélection?</span>
+      </div>
+      <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+          (click)="deleteTypesDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+          (click)="confirmDeleteSelected()"></button>
+      </ng-template>
+    </p-dialog>
+
+  </div>
+</div>

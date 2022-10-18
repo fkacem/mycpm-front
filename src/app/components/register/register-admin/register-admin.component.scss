@@ -1,0 +1,22 @@
+.partsHover:hover{
+    background-color: rgba(0, 29, 118, 0.03);
+}
+
+:host ::ng-deep .p-dropdown {
+    width: 14rem;
+}
+
+.country-item-value {
+    img.flag {
+        width: 17px;
+    }
+}
+
+p-skeleton {
+    width: 100%;
+}
+small{
+//text color red
+color: #ff0000;
+}
+

@@ -1,0 +1,270 @@
+
+<p-toast></p-toast>
+<div class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="grid justify-content-center p-2 lg:p-0" style="min-width:80%">
+        <div class="col-12 mt-5  text-center">
+
+            <a href="/" class="text-blue-500">
+                <img src="../../../../assets/layout/images/logo-tt.svg" alt="TT Image" class="mb-1" style="width:100px; height:70px;">                
+            </a>
+        </div>
+
+        <div class="col-12 xl:col-8 mb-5" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 100%, rgba(243, 33, 33, 0) 30%);">
+            <div class="h-full w-full m-0 py-7 px-4" style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
+            
+                <div class="text-center mb-5">
+                    <div class="text-900 text-3xl font-medium mb-3">Créer votre compte MyCPM</div>
+                </div>
+
+                <div class="text-500 mb-5">Veuillez remplir tous les champs obligatoires marqués par un astérisque (*).</div>
+        
+                <div class="w-full md:w-12 mx-auto">
+                    <form [formGroup]="myForm">
+                        <!-- ---hidden--- -->
+                        <div class="field">
+                            <input type="text" hidden pInputText id="code" formControlName="id" />
+                        </div>
+    
+                        <h4>Détails Organisation</h4>
+                        <div class="p-fluid p-formgrid grid partsHover">
+
+                            <!-- <div class="field col-12  ">
+                                <label >Logo Organisation</label>
+                                <p-fileUpload class="pt-5" accept="image/png, image/jpeg"  maxFileSize="1000000000" 
+                                chooseLabel="Choisir" [showCancelButton]=true  [showUploadButton]=false>
+                                
+                                </p-fileUpload>
+                  
+                            </div> -->
+
+                            <div class="field col-12 md:col-5">
+                                <label for="organizationName">Nom Organisation*</label>
+                                <input id="organizationName" pInputText placeholder="Nom de l'Organisation" type="text" formControlName="organizationName"/>
+                                <div *ngIf="(myForm.get('organizationName').invalid && myForm.get('organizationName').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('organizationName').hasError('required')">Nom est obligatoire.</small>
+                                </div>
+                                <div *ngIf="myForm.errors?.['nameTaken']">
+                                    <small class="ng-dirty ng-invalid">Nom Organisation déjà utilisé.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label for="organizationCode">Code Organisation*</label>
+                                <input id="organizationCode" pInputText placeholder="Code" type="text" formControlName="organizationCode"/>
+                                <div *ngIf="(myForm.get('organizationCode').invalid && myForm.get('organizationCode').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('organizationCode').hasError('required')">Code est obligatoire.</small>
+                                </div>
+                                <div *ngIf="myForm.errors?.['codeTaken']">
+                                    <small class="ng-dirty ng-invalid">Code Organisation déjà utilisé.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="sector">Secteur d'activité*</label>
+                                <p-dropdown id="sector" appendTo="body" [options]="sectors" optionLabel="name" placeholder="Sélèctionner" formControlName="sector"></p-dropdown>
+                                <div *ngIf="(myForm.get('sector').invalid && myForm.get('sector').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('sector').hasError('required')">Secteur d'activité est obligatoire.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-6">
+                                <label for="organizationEmail">E-Mail</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-at"></i></span>
+                                    <input id="organizationEmail" type="email" formControlName="organizationEmail" pInputText placeholder="e-mail">         
+                                </div>
+                                <div *ngIf="(myForm.get('organizationEmail').invalid && myForm.get('organizationEmail').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('organizationEmail').hasError('required')">E-mail est obligatoire.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('organizationEmail').hasError('email')">Format incorrect.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="phone">Numéro de téléphone de l'organisation</label>
+                                <!-- <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Select a Country">
+                                    <ng-template pTemplate="selectedItem">
+                                        <div class="country-item country-item-value" *ngIf="selectedCountry">
+                                            <img src="assets/layout/images/flag_placeholder.png" [class]="'flag flag-' + selectedCountry.code.toLowerCase()" />
+                                            <div>{{selectedCountry.name}}</div>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-country pTemplate="item">
+                                        <div class="country-item">
+                                            <img src="assets/layout/images/flag_placeholder.png" [class]="'flag flag-' + country.code.toLowerCase()" />
+                                            <div>{{country.name}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-dropdown> -->
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+                                    <p-inputNumber id="phone" mode="decimal" formControlName="phone" placeholder="Téléphone" [useGrouping]="false">
+                                    </p-inputNumber>     
+                                </div>
+                                <div *ngIf="(myForm.get('phone').invalid && myForm.get('phone').dirty)">
+                                    <small *ngIf="myForm.get('phone').hasError('pattern')">Numéro de téléphone invalide.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('phone').hasError('required')">Numéro de téléphone est obligatoire.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label for="country">Pays*</label>
+                                <p-dropdown id="country" appendTo="body"  placeholder="Sélèctionner" formControlName="country"></p-dropdown>
+                                <div *ngIf="(myForm.get('country').invalid && myForm.get('country').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('country').hasError('required')">Pays est obligatoire.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-3">
+                                <label for="region">Région*</label>
+                                <input id="region" pInputText placeholder="Région de l'organisation" type="text" formControlName="region"/>
+                                <div *ngIf="(myForm.get('region').invalid && myForm.get('region').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('region').hasError('required')">Région est obligatoire.</small>
+                                </div>
+                            </div>
+                            
+                            <div class="field col-12 md:col-6">
+                                <label for="address">Adresse*</label>
+                                <input id="address" pInputText placeholder="Adresse de l'organisation" type="text" formControlName="address"/>
+                                <div *ngIf="(myForm.get('address').invalid && myForm.get('address').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('address').hasError('required')">L'adresse est obligatoire.</small>
+                                </div>
+                            </div>
+                            
+                            <div class="field col-12 md:col-12">
+                                <label for="document">Document juridique (Patente/RC)</label>
+                                <p-fileUpload accept="application/pdf" id="document" (onSelect)="onSelectDocument($event)" [showCancelButton]=false (onRemove)="onRemoveDocument()" maxFileSize="10000000" invalidFileSizeMessageDetail= "la taille de fichier maximale est de 10 Mo."
+                                [showUploadButton]=false chooseLabel="Choisir" cancelLabel="Annuler">
+                                </p-fileUpload>
+                              </div>
+                        </div>
+                        
+                        <h4>Détails Directeur Général</h4>
+                        <div class="p-fluid p-formgrid grid partsHover">
+
+                            <div class="field col-12 md:col-4">
+                                <label for="directorLastName">Nom Directeur Général*</label>
+                                <input id="directorLastName" pInputText placeholder="Nom " type="text" formControlName="directorLastName"/>
+                                <div *ngIf="(myForm.get('directorLastName').invalid && myForm.get('directorLastName').dirty)">
+                                    <small *ngIf="myForm.get('directorLastName').hasError('required')">Nom est obligatoire.</small>
+                                    <small *ngIf="myForm.get('directorLastName').hasError('pattern')">Nom invalide.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="directorFirstName">Prénom Directeur Général*</label>
+                                <input id="directorFirstName" pInputText placeholder="Prénom " type="text" formControlName="directorFirstName"/>
+                                <div *ngIf="(myForm.get('directorFirstName').invalid && myForm.get('directorFirstName').dirty)">
+                                    <small *ngIf="myForm.get('directorFirstName').hasError('required')">Prénom est obligatoire.</small>
+                                    <small *ngIf="myForm.get('directorFirstName').hasError('pattern')">Prénom invalide.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="directorNumber">Numéro de téléphone Directeur général*</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+                                    <p-inputNumber id="directorNumber" mode="decimal" placeholder="Téléphone" [useGrouping]="false" formControlName="directorPhone">
+                                    </p-inputNumber>     
+                                </div>
+                                <div *ngIf="(myForm.get('directorPhone').invalid && myForm.get('directorPhone').dirty)">
+                                    <small *ngIf="myForm.get('directorPhone').hasError('pattern')">Numéro de téléphone invalide.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('directorPhone').hasError('required')">Numéro de téléphone est obligatoire.</small>
+
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-12">
+                                <label for="directorEmail">E-Mail Directeur général*</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-at"></i></span>
+                                    <input id="directorEmail" type="email" formControlName="directorEmail" pInputText placeholder="e-mail">         
+                                </div>
+                                <div *ngIf="(myForm.get('directorEmail').invalid && myForm.get('directorEmail').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('directorEmail').hasError('email')">Format incorrect.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('directorEmail').hasError('required')">Email est obligatoire.</small>
+                                
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Détails Administrateur Organisation</h4>
+                        <div class="p-fluid p-formgrid grid partsHover">
+
+                            <div class="field col-12 md:col-4">
+                                <label for="adminLastName">Nom Administrateur*</label>
+                                <input id="adminLastName" pInputText placeholder="Nom " type="text" formControlName="adminLastName"/>
+                                <div *ngIf="(myForm.get('adminLastName').invalid && myForm.get('adminLastName').dirty)">
+                                    <small *ngIf="myForm.get('adminLastName').hasError('required')">Nom est obligatoire.</small>
+                                    <small *ngIf="myForm.get('adminLastName').hasError('pattern')">Nom invalide.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="adminFirstName">Prénom Administrateur*</label>
+                                <input id="adminFirstName" pInputText placeholder="Prénom " type="text" formControlName="adminFirstName"/>
+                                <div *ngIf="(myForm.get('adminFirstName').invalid && myForm.get('adminFirstName').dirty)">
+                                    <small *ngIf="myForm.get('adminFirstName').hasError('required')">Prénom est obligatoire.</small>
+                                    <small *ngIf="myForm.get('adminFirstName').hasError('pattern')">Prénom invalide.</small>
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-4">
+                                <label for="adminNumber">Numéro de téléphone Administrateur*</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+                                    <p-inputNumber id="adminNumber" mode="decimal" placeholder="Téléphone" [useGrouping]="false" formControlName="adminPhone">
+                                    </p-inputNumber>     
+                                </div>
+                                <div *ngIf="(myForm.get('adminPhone').invalid && myForm.get('adminPhone').dirty)">
+                                    <small *ngIf="myForm.get('adminPhone').hasError('pattern')">Numéro de téléphone invalide.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('adminPhone').hasError('required')">Numéro de téléphone est obligatoire.</small>
+
+                                </div>
+                            </div>
+                            <div class="field col-12 md:col-12">
+                                <label for="adminEmail">E-Mail Administrateur*</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon"><i class="pi pi-at"></i></span>
+                                    <input id="adminEmail" type="email"  pInputText placeholder="e-mail" formControlName="adminEmail">         
+                                </div>
+                                <div *ngIf="(myForm.get('adminEmail').invalid && myForm.get('adminEmail').dirty)">
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('adminEmail').hasError('email')">Format incorrect.</small>
+                                    <small class="ng-dirty ng-invalid" *ngIf="myForm.get('adminEmail').hasError('required')">Numéro de téléphone est obligatoire.</small>
+                                
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4>Détails Compte</h4>
+                        <div class="p-fluid p-formgrid grid partsHover">
+                        <div class="field col-12 md:col-12">
+                            <label for="username">Nom d'utilisateur*</label>
+                            <div class="p-inputgroup">
+                                <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                                <input type="text" id="username" pInputText placeholder="Choisir un Username" formControlName="username">         
+                            </div>
+                            <div *ngIf="(myForm.get('username').invalid && myForm.get('username').dirty)">
+                                <small *ngIf="myForm.get('username').hasError('required')">Nom d'utilisateur est obligatoire.</small>
+                            </div>
+                            <div *ngIf="myForm.errors?.['usernameTaken']">
+                                <small class="ng-dirty ng-invalid">Nom d'utilisateur déjà utilisé.</small>
+                            </div>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="password1">Mot de Passe*</label>
+                            <p-password [feedback]="false" id="password1" placeholder="Mot de Passe" [toggleMask]="true"
+                                styleClass="p-password p-component p-inputwrapper p-input-icon-right" formControlName="password">
+                            </p-password>
+                        </div>
+                        <div class="field col-12 md:col-6">
+                            <label for="password2">Confirmation de Mot de Passe*</label>
+                            <p-password [feedback]="false" id="password2" placeholder="Mot de Passe" formControlName="confirmPassword"
+                              styleClass="p-password p-component p-inputwrapper p-input-icon-right" [toggleMask]="true"></p-password>
+                              <div *ngIf="myForm.errors?.['notmatched'] && (myForm.touched || myForm.dirty)">
+                                <small class="ng-dirty ng-invalid">Mot de passe ne correspond pas.</small>
+                              </div>
+                        </div>
+                    </div>
+    
+                    </form>
+                    <p-button label="S'inscrire" iconPos="right" [loading]="showLoading" 
+                        (click)="onRegister()" icon="pi pi-user" styleClass="w-full"></p-button>
+
+                </div>
+                
+
+
+            </div>
+        </div>
+
+    </div>
+</div>

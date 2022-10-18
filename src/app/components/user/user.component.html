@@ -1,0 +1,251 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Exporter" icon="pi pi-upload" class="p-button-primary"></button>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="users" [rows]="10" [paginator]="true" [globalFilterFields]="['firstName','lastName']" responsiveLayout="scroll"
+        [(selection)]="selectedUsers" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Affichage {first} à {last} de {totalRecords} entrées"  [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="flex align-items-center justify-content-between">
+                <h5 class="m-0">Gestion des utilisateurs</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Recherche..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <!-- <th>Image</th> -->
+                <th pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
+                <th pSortableColumn="lastName">Nom <p-sortIcon field="lastName"></p-sortIcon></th>
+                <th pSortableColumn="firstName">Prénom <p-sortIcon field="firstName"></p-sortIcon></th>
+                <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+                <!-- <th pSortableColumn="role">Role<p-sortIcon field="role"></p-sortIcon></th> -->
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                </td>
+                <!-- <td><img [src]="'assets/showcase/images/demo/product/' " [alt]="user?.firstName" width="100" class="shadow-4" /></td> -->
+                
+                <td>{{user?.username}}</td>
+                <td>{{user?.LastName}}</td>
+                <td>{{user?.firstName}}</td>
+                <td>{{user?.email}}</td>
+                <!-- <td>{{user?.role?.name}}</td> -->
+                <td style="width:30%; min-width:10rem;">
+                  <div class="flex justify-content-center">
+                    <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-help mr-2"
+                      (click)="viewUser(user)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                      (click)="deleteUser(user)"></button>
+                  </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                Au total, il y a {{users ? users.length : 0 }} utilisateurs.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="userDialog" [style]="{width: '70%'}" header="Ajouter un Utilisateur" [modal]="true"
+      class="p-fluid">
+      <div class="text-500 mb-5">Veuillez remplir tous les champs obligatoires marqués par un astérisque (*).</div>
+      <ng-template pTemplate="content">
+        <form [formGroup]="myForm">
+          <!-- ---hidden--- -->
+          <div class="field">
+            <input type="text" hidden pInputText id="code" formControlName="id" />
+          </div>
+          <h5>Détails Personnelles</h5>
+          <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-3">
+              <label for="lastname">Nom*</label>
+              <input id="lastname" pInputText placeholder="Nom de famille" type="text" formControlName="lastName"
+                required autofocus />
+              <div *ngIf="(myForm.get('lastName').invalid && myForm.get('lastName').dirty)">
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('lastName').hasError('required')">Nom est
+                  obligatoire.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('lastName').hasError('pattern')">Nom
+                  invalide.</small>
+              </div>
+            </div>
+            <div class="field col-12 md:col-3">
+              <label for="firstname">Prénom*</label>
+              <input id="firstname" pInputText type="text" placeholder="Prénom" formControlName="firstName" required />
+              <div *ngIf="(myForm.get('firstName').invalid && myForm.get('firstName').dirty)">
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('firstName').hasError('required')">Prénom est
+                  obligatoire.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('firstName').hasError('pattern')">Prénom
+                  invalide.</small>
+              </div>
+            </div>
+            <div class="field col-12 md:col-3">
+              <label for="dob">Sexe*</label>
+              <p-dropdown id="gender" appendTo="body" [options]="genders" placeholder="Séléctionner" formControlName="gender"></p-dropdown>
+                  <div *ngIf="(myForm.get('gender').invalid && myForm.get('gender').dirty)">
+                    <small *ngIf="myForm.get('gender').hasError('required')">Champ obligatoire.</small>
+                  </div>
+            </div>
+            <div class="field col-12 md:col-3">
+              <label for="dob">Date de Naissance*</label>
+              <p-calendar id="dob" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true" placeholder="jj/MM/aaaa"
+                formControlName="dob"></p-calendar>
+              <div *ngIf="(myForm.get('dob').invalid && myForm.get('dob').dirty)">
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('dob').hasError('required')">Age est
+                  obligatoire.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('dob').hasError('ageRange')">Age au moins 18
+                  ans.</small>
+              </div>
+            </div>
+            <div class="field col-12 md:col-6">
+              <label for="email">E-Mail*</label>
+              <input pInputText id="email" type="email" placeholder="E-mail" formControlName="email" />
+              <div *ngIf="(myForm.get('email').invalid && myForm.get('email').dirty)">
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('email').hasError('required')">Email est
+                  obligatoire.</small>
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('email').hasError('email')">Format
+                  incorrect.</small>
+              </div>
+            </div>
+            <div class="field col-12 md:col-6">
+                <label for="phone">Numéro de Téléphone*</label>
+                <input pInputText id="phone" type="text" placeholder="Numéro de Téléphone" formControlName="phone" />
+                <div *ngIf="(myForm.get('phone').invalid && myForm.get('phone').dirty)">
+                  <small class="ng-dirty ng-invalid" *ngIf="myForm.get('phone').hasError('required')">Numéro est
+                    obligatoire.</small>
+                  <small class="ng-dirty ng-invalid" *ngIf="myForm.get('phone').hasError('pattern')">Format
+                    incorrect.</small>
+                </div>
+            </div>
+            <div class="field col-12 md:col-12">
+              <label for="address">Adresse*</label>
+              <textarea id="address" rows="5" cols="30" pInputTextarea placeholder="Adresse" formControlName="address" autoResize="autoResize"></textarea>
+          </div>
+
+          </div>
+
+          <h5>Organisation</h5>
+          <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-12">
+              <p-accordion>
+                <p-accordionTab header="Selectionner une Organisation"  class="line-height-3 m-0">
+                  <p-table #dt1 [value]="organizations" [scrollable]="true" scrollHeight="270px" selectionMode="single"
+                  [rows]="3" [paginator]="true" [rowsPerPageOptions]="[3,5,10]" [(selection)]="selectedOrganization">
+                    <ng-template  responsiveLayout="scroll" pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="code">Code<p-sortIcon field="code"></p-sortIcon></th>
+                            <th pSortableColumn="name">Nom<p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="sector">Secteur d'activité<p-sortIcon field="sector"></p-sortIcon></th>
+                        </tr>
+                        <tr>
+                          <th>
+                              <input pInputText type="text" (input)="dt1.filter($event.target.value, 'code', 'contains')" [value]="dt1.filters['code']?.value" placeholder="rechercher par code" class="p-column-filter">
+                          </th>
+                          <th>
+                              <input pInputText type="text" (input)="dt1.filter($event.target.value, 'firstName', 'contains')" [value]="dt1.filters['firstName']?.value" placeholder="rechercher par nom" class="p-column-filter">
+                          </th>
+                          <th>
+                              <input pInputText type="text" (input)="dt1.filter($event.target.value, 'sector.name', 'contains')" [value]="dt1.filters['registrationNumber']?.value" placeholder="rechercher par secteur" class="p-column-filter">
+                          </th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-organization>
+                        <tr [pSelectableRow]="organization" (click)="userSelected()">
+                            <td><i class="pi pi-user mr-4 " style="font-size: 1rem" ></i><span class="p-column-title">code</span>{{organization?.code }}</td>
+                            <td><span class="p-column-title">Nom</span>{{organization?.name}}</td>
+                            <td><span class="p-column-title">Secteur d'activité</span>{{organization?.sector?.name}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                          <td colspan="4">Aucun Organization a été trouver.</td>
+                      </tr>
+                  </ng-template>
+                </p-table>
+                </p-accordionTab>
+            </p-accordion>
+            </div>
+          </div>
+
+          <h5>Sécurité et Confidentialité</h5>
+          <div class="p-fluid p-formgrid grid">
+            <div class="field col-12 md:col-6">
+              <label for="username">Nom d'utilisateur*</label>
+              <input id="username" pInputText type="text" placeholder="Choisir un Username"
+                formControlName="username" />
+              <div *ngIf="(myForm.get('username').invalid && myForm.get('username').dirty)">
+                <small class="ng-dirty ng-invalid" *ngIf="myForm.get('username').hasError('required')">Nom d'utilisateur
+                  est obligatoire.</small>
+              </div>
+              <div *ngIf="myForm.errors?.['usernameTaken']">
+                <small class="ng-dirty ng-invalid">Nom d'utilisateur déjà utilisé.</small>
+              </div>
+            </div>
+            <div class="field col-12 md:col-6">
+              <label for="role">Role*</label>
+              <p-multiSelect appendTo="body" [options]="roles" formControlName="roles" defaultLabel="Choisir les Roles" optionLabel="name" class="multiselect-custom">
+                <ng-template let-value pTemplate="selectedItems">
+                    <div class=" role-item-value" *ngFor="let option of this.myForm.value.roles">
+                        <div>{{option.name}}</div>
+                    </div>
+                    <div *ngIf="!this.myForm.value.roles || this.myForm.value.roles.length === 0" >
+                      Choisir les Roles
+                    </div>
+                </ng-template>
+                <ng-template let-role pTemplate="item">
+                    <div >
+                        <div>{{role.name}}</div>
+                    </div>
+                </ng-template>
+            </p-multiSelect>
+              
+            </div>
+
+            <div [hidden]="isEdit" class="field col-12 md:col-6">
+              <label for="password1">Mot de Passe*</label>
+              <p-password [feedback]="false" id="password1" placeholder="Mot de Passe" [toggleMask]="true"
+                styleClass="p-password p-component p-inputwrapper p-input-icon-right" formControlName="password">
+              </p-password>
+            </div>
+            <div [hidden]="isEdit" class="field col-12 md:col-6">
+              <label for="password2">Confirmation de Mot de Passe*</label>
+              <p-password [feedback]="false" id="password2" placeholder="Mot de Passe" formControlName="confirmPassword"
+                styleClass="p-password p-component p-inputwrapper p-input-icon-right" [toggleMask]="true"></p-password>
+              <div *ngIf="myForm.errors?.['notmatched'] && (myForm.touched || myForm.dirty)">
+                <small class="ng-dirty ng-invalid">Mot de passe ne correspond pas.</small>
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveUser()"
+          ></button>
+          <!-- [disabled]="myForm.invalid || pwdForm.invalid" -->
+      </ng-template>
+    </p-dialog>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

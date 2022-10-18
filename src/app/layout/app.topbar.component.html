@@ -1,0 +1,43 @@
+<div class="layout-topbar">
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/layout/images/logo-tt.svg" alt="logo">
+        <span>Espace CPM</span>
+    </a>
+
+    <button class="p-link layout-menu-button layout-topbar-button p-trigger" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+
+    <button class="p-link layout-topbar-menu-button layout-topbar-button p-trigger" (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div class="layout-topbar-menu ml-3 " >
+        <span class="p-input-icon-right">
+            <input type="text" pInputText placeholder="Search">
+            <i class="pi pi-search"></i>
+        </span>
+    </div>
+
+
+    <div class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-bell"></i>
+            <span>Notifications</span>
+        </button>
+        
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-comment"></i>
+            <span>Messages</span>
+        </button>
+
+        <button (click)="onProfile()"  class="p-link layout-topbar-button">
+            <i class="pi pi-user"></i>
+            <span>Profile</span>
+        </button>
+        <a (click)="onLogout()" class="p-link layout-topbar-button">
+            <i class="pi pi-sign-out"></i>
+            <span>Log out</span>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,287 @@
+<p-toast></p-toast>
+<div class="grid">
+  <div class="col-12">
+    <!-- order details-->
+    <div class="card">
+      <div class="surface-section">
+        <div class="font-medium text-3xl text-900 mb-3">Bon de Commande : {{order?.code}} </div>
+        <ul class="list-none p-0 m-0">
+          <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+            <div class="text-500 w-6 md:w-2 font-medium">Date de Début</div>
+            <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {{order?.startDate | date:'dd/LL/yyyy'}}
+            </div>
+          </li>
+          <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+            <div class="text-500 w-6 md:w-2 font-medium">Montant</div>
+            <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {{order?.amount}}
+            </div>
+          </li>
+          <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+            <div class="text-500 w-6 md:w-2 font-medium">Délais </div>
+            <div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+              {{order?.limit}}
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+    <!-- attachements table-->
+    <div class="card">
+      <p-toolbar styleClass="mb-1">
+        <ng-template pTemplate="left">
+          <div class="my-2">
+            <button pButton pRipple label="Ajouter" icon="pi pi-plus" class="p-button-success mr-2"
+              (click)="openNew()"></button>
+            <button pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger"
+              (click)="deleteSelectedAttachments()" [disabled]="!selectedAttachments|| !selectedAttachments?.length"></button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+      <p-table #dt [value]="attachments" responsiveLayout="scroll"
+        [globalFilterFields]="['code']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+        [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} de {totalRecords} entrées"
+        [(selection)]="selectedAttachments" selectionMode="multiple" [rowHover]="true" dataKey="id">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Gestion des Attachement</h5>
+            <span class="block mt-2 md:mt-0 p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText Item="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Recherche..." />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="code"><div class="flex justify-content-center">Code<p-sortIcon field="code"></p-sortIcon></div>
+            <th pSortableColumn="attachmentDate"><div class="flex justify-content-center">Date Attachement<p-sortIcon field="attachmentDate"></p-sortIcon></div>
+            </th>
+            <th pSortableColumn="itemsUsed"><div class="flex justify-content-center">Articles<p-sortIcon field="itemsUsed"></p-sortIcon></div>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-attachment>
+          <tr>
+            <tr>
+              <td>
+                  <p-tableCheckbox [value]="attachment"></p-tableCheckbox>
+              </td>
+              <td style="width:20%; min-width:10rem;">
+                  <span class="p-column-title">code</span>
+                  <div class="flex justify-content-center text-center">{{attachment?.code}}</div>
+              </td>
+              <td style="width:35%; min-width:10rem;">
+                  <span class="p-column-title">attachmentDate</span>
+                  <div class="flex justify-content-center text-center">{{attachment?.attachmentDate | date: 'dd/MM/yyyy'}}</div>
+              </td>
+              <td style="width:15%; min-width:10rem;">
+                <span class="p-column-title">Article</span>
+                <button (click)="openArticles(attachment)"  pButton pRipple type="button" label="Articles" icon="pi pi-shopping-cart" class="p-button-raised p-button-text p-button-plain"></button>
+            </td>
+              <td style="width:30%; min-width:10rem;">
+                  <div class="flex justify-content-center text-center">
+                      <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                      (click)="editAttachment(attachment)"></button>
+                        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                      (click)="deleteAttachment(attachment)"></button>
+                  </div>
+                </td>
+          </tr>
+        </ng-template>
+        <!-- empty table message-->
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center">Aucun attachement trouvé.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<!----------------------save dialog-------------------- -->
+<p-dialog [(visible)]="attachmentDialog" [style]="{width: '50%'}" header="Enregistrer Attachement" [modal]="true"
+  class="p-fluid">
+  <div class="text-500 mb-5">Veuillez remplir tous les champs obligatoires marqués par un astérisque (*).</div>
+  <ng-template pTemplate="content">
+    <form [formGroup]="myForm">
+      <!-- ---hidden--- -->
+      <div class="field">
+        <input Item="text" hidden pInputText id="code" formControlName="id" />
+      </div>
+      <!-- ---code--- -->
+      <div class="field">
+        <label for="title">Code *</label>
+        <input Item="text" pInputText id="code" formControlName="code" placeholder="Code Attachement" required />
+        <div *ngIf="(myForm.get('code').invalid && myForm.get('code').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="myForm.get('code').hasError('required')">
+            Code est obligatoire.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="myForm.get('code').hasError('pattern')">
+            Code invalide.
+          </small>
+        </div>
+      </div>
+      <div class="field">
+        <label for="date">Date *</label>
+        <p-calendar id="date" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true"
+          placeholder="jj/MM/aaaa" formControlName="date"></p-calendar>
+        <div *ngIf="(myForm.get('date').invalid && myForm.get('date').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="myForm.get('date').hasError('date')">Date est
+            obligatoire.</small>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <p-footer>
+    <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Enregistrer" [disabled]="myForm.invalid" icon="pi pi-check" class="p-button-text"
+      (click)="saveAttachment()"></button>
+  </p-footer>
+</p-dialog>
+
+<!--------delete attachment dialog------- -->
+<p-dialog [(visible)]="deleteAttachmentDialog" header="Confirmer" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span *ngIf="attachment">Supprimer <b>{{attachment?.name}}</b>?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Non"
+      (click)="deleteAttachmentDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Oui" (click)="confirmDelete()"></button>
+  </ng-template>
+</p-dialog>
+
+<!--------delete selection dialog------- -->
+<p-dialog [(visible)]="deleteAttachmentsDialog" header="Confirmer" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Supprimer Sélection?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteAttachmentsDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+      (click)="confirmDeleteSelected()"></button>
+  </ng-template>
+</p-dialog>
+
+
+<!----------------------articles dialog-------------- -->
+<p-dialog [(visible)]="articlesDialog" header="Gestion des Articles" [modal]="true" [style]="{width:'85%'}">
+  <ng-template pTemplate="content">
+    <div >
+      <p-tabView>
+        <p-tabPanel header="Liste des Articles">
+          <p-table [value]="order?.itemsUsed" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+            <ng-template pTemplate="caption">
+
+              <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                <span class="block mt-2 md:mt-0 p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                    placeholder="Recherche..." />
+                </span>
+              </div>
+            </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Image</th>
+                        <th pSortableColumn="name">Article <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="price">Quantité <p-sortIcon field="price"></p-sortIcon></th>
+                        <th pSortableColumn="price">Prix <p-sortIcon field="price"></p-sortIcon></th>
+                        <th>View</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usedItem>
+                    <tr>
+                        <td style="width: 15%; min-width: 5rem;">
+                            <img src="assets/layout/images/ps.png" class="shadow-4" alt="{{usedItem?.name}}" width="50">
+                        </td>
+                        <td style="width: 35%; min-width: 7rem;">{{usedItem?.item?.name}}</td>
+                        <td style="width: 35%; min-width: 7rem;">{{usedItem?.quantity}}</td>
+                        <td style="width: 35%; min-width: 8rem;">{{usedItem?.price | currency:'USD'}}</td>
+                        <td style="width: 15%;">
+                          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                          (click)="deleteItemUsed(usedItem)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+
+        <!----------------------add item-------------- -->
+        <p-tabPanel header="Ajouter Article">
+          <div class="grid ">
+            <div class="col-12">
+              <h5>Articles Disponible</h5>
+              <p-dataView #dv [value]="items" [paginator]="true" [rows]="9" filterBy="name,code"
+          [sortField]="sortField" [sortOrder]="sortOrder" layout="list">
+          <ng-template pTemplate="header">
+              <div class="flex flex-column md:flex-row md:justify-content-between">
+                  <!-- <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Price" (onChange)="onSortChange($event)" styleClass="mb-2 md:mb-0"></p-dropdown> -->
+                  <span class="p-input-icon-left mb-2 md:mb-0">
+                      <i class="pi pi-search"></i>
+                      <input type="search" pInputText placeholder="Rechercher" (input)="dv.filter($event.target.value)">
+                  </span>
+                  <!-- <p-dataViewLayoutOptions></p-dataViewLayoutOptions> -->
+              </div>
+          </ng-template>
+          <ng-template let-item pTemplate="listItem">
+              <div class="col-12">
+                  <div class="product-list-item">
+                      <img [src]="'assets/layout/images/ps.png'" [alt]="item?.name"/>
+                      <div class="product-list-detail">
+                          <div class="product-name">{{item?.name}}</div>
+                          <div class="product-description">{{item?.code}}</div>
+                          <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+                          <i class="pi pi-tag product-category-icon"></i><span class="product-category">{{item?.type.name}}</span>
+                      </div>
+                      <div class="product-list-action">
+                          <!-- <span class="product-price">${{42}}</span> -->
+                          <p-button icon="pi pi-plus" styleClass="p-button-success" label="Ajouter" (click)="op.toggle($event)"></p-button>
+                          <p-overlayPanel #op [showCloseIcon]="true" [style]="{width: '40%'}" (onShow)="openOverlayPanel()">
+                            <ng-template pTemplate>
+                              <form [formGroup]="usedItemForm">
+                              <div class="formgroup-inline">
+                                <div class="field">
+                                  <p-inputNumber inputId="limit" formControlName="quantity" mode="decimal" placeholder="Quantité" [showButtons]="true"  [min]="0" >
+                                  </p-inputNumber>
+                                </div>
+                                <div class="field">
+                                  <div class="p-inputgroup">
+                                    <input type="text" pInputText placeholder="Prix" formControlName="price">
+                                    <span class="p-inputgroup-addon">$</span>
+                                  </div>
+                                </div>
+                                <button pButton pRipple type="button" icon="pi pi-check" label="Envoyer" class="p-button-primary mt-1" [disabled]="usedItemForm?.invalid" (click)="submitUsedItem(item)"></button>
+                              </div>
+                            </form>
+                            </ng-template>
+                        </p-overlayPanel>
+                        <span class="product-badge status-INSTOCK">{{item.item_class}}</span>
+                      </div>
+                  </div>
+              </div>
+          </ng-template>
+          </p-dataView>
+            </div>
+          </div>
+
+        </p-tabPanel>
+    </p-tabView>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Fermer"></button>
+  </ng-template>
+</p-dialog>

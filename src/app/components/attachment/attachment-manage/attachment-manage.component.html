@@ -1,0 +1,240 @@
+<p-toast></p-toast>
+<div class="card">
+    <h5>Gérer Les Attachements</h5>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    
+
+    <p-tabView>
+        <p-tabPanel header="Marchés Projet">
+            <p-table #dt [value]="mp" responsiveLayout="scroll" [rows]="5" 
+            [globalFilterFields]="['code','name']" 
+            [paginator]="true" [rowsPerPageOptions]="[5,10,20]" 
+            [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} de {totalRecords} entrées" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Marchés</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Recherche..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem"></th>
+                        <th pSortableColumn="code"><div class="flex justify-content-center">Code<p-sortIcon field="code"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="name"><div class="flex justify-content-center">Désignation<p-sortIcon field="name"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="profession"><div class="flex justify-content-center">Métier<p-sortIcon field="profession"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="type"><div class="flex justify-content-center">Type<p-sortIcon field="type"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="organization"><div class="flex justify-content-center">Organization<p-sortIcon field="organization"></p-sortIcon></div>
+                        </th>
+                      </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-market let-expanded="expanded">
+                    <tr>
+                        <td style="width:5%; min-width:1rem;">
+                            <button type="button" pButton pRipple [pRowToggler]="market" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Code</span>
+                            <div class="flex justify-content-center">{{market?.code}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Désignation</span>
+                            <div class="flex justify-content-center">{{market?.name}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Métier</span>
+                            <div class="flex justify-content-center">{{market?.profession?.name}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Type</span>
+                            <div class="flex justify-content-center">{{market?.type}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Organisation</span>
+                            <div class="flex justify-content-center">{{market?.organization?.name}}</div>
+                          </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-market>
+                    <tr>
+                        <td colspan="7">
+                            <div class="p-3">
+                                <p-table [value]="market?.purchaseOrders" dataKey="id">
+                                    <ng-template pTemplate="caption">
+                                        Bon de Commandes
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th pSortableColumn="code"><div class="flex justify-content-center">Code<p-sortIcon field="code"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="amount"><div class="flex justify-content-center">Montant<p-sortIcon field="amount"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="limit"><div class="flex justify-content-center">Delais<p-sortIcon field="limit"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="startDate"><div class="flex justify-content-center">Date Debut Travaux<p-sortIcon field="startDate"></p-sortIcon></div>
+                                            </th>
+                                            <th><div class="flex justify-content-center"></div>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-purchaseOrder>
+                                        <tr>
+                                            <td style="width:10%; min-width:2rem;">
+                                                <span class="p-column-title">Code</span>
+                                                <div class="flex justify-content-center">{{purchaseOrder?.code}}</div>
+                                              </td>
+                                              <td style="width:20%; min-width:10rem;">
+                                                <span class="p-column-title">Montant</span>
+                                                <div class="flex justify-content-center">{{purchaseOrder?.amount}}</div>
+                                              </td>
+                                              <td style="width:15%; min-width:10rem;">
+                                                  <span class="p-column-title">Delais</span>
+                                                  <div class="flex justify-content-center">{{purchaseOrder?.limit}}</div>
+                                              </td>
+                                              <td style="width:30%; min-width:10rem;">
+                                                  <span class="p-column-title">Date Debut Travaux</span>
+                                                  <div class="flex justify-content-center">{{purchaseOrder?.startDate | date:'dd/LL/yyyy'}}</div>
+                                              </td>
+                                              <td style="width:30%; min-width:10rem;">
+                                                  <span class="p-column-title"></span>
+                                                  <div class="flex justify-content-center"><button (click)="openPurchaseOrdersDialog(market, purchaseOrder)" pButton pRipple type="button" label="Voir"
+                                                    icon="pi pi-eye" class="p-button-raised p-button-text p-button-plain p-button-success"></button></div>
+                                              </td> 
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td colspan="6">Aucun Bon de Commande trouvé.</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Marchés Cadre">
+            <p-table #dt [value]="mc" responsiveLayout="scroll" [rows]="5" 
+            [globalFilterFields]="['code','name']" 
+            [paginator]="true" [rowsPerPageOptions]="[5,10,20]" 
+            [showCurrentPageReport]="true" currentPageReportTemplate="Affichage {first} à {last} de {totalRecords} entrées" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Marchés</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Recherche..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem"></th>
+                        <th pSortableColumn="code"><div class="flex justify-content-center">Code<p-sortIcon field="code"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="name"><div class="flex justify-content-center">Désignation<p-sortIcon field="name"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="profession"><div class="flex justify-content-center">Métier<p-sortIcon field="profession"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="type"><div class="flex justify-content-center">Type<p-sortIcon field="type"></p-sortIcon></div>
+                        </th>
+                        <th pSortableColumn="organization"><div class="flex justify-content-center">Organization<p-sortIcon field="organization"></p-sortIcon></div>
+                        </th>
+                      </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-market let-expanded="expanded">
+                    <tr>
+                        <td style="width:5%; min-width:1rem;">
+                            <button type="button" pButton pRipple [pRowToggler]="market" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Code</span>
+                            <div class="flex justify-content-center">{{market?.code}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Désignation</span>
+                            <div class="flex justify-content-center">{{market?.name}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Métier</span>
+                            <div class="flex justify-content-center">{{market?.profession?.name}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Type</span>
+                            <div class="flex justify-content-center">{{market?.type}}</div>
+                          </td>
+                          <td style="width:20%; min-width:10rem;">
+                            <span class="p-column-title">Organisation</span>
+                            <div class="flex justify-content-center">{{market?.organization?.name}}</div>
+                          </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-market>
+                    <tr>
+                        <td colspan="7">
+                            <div class="p-3">
+                                <p-table [value]="market?.purchaseOrders" dataKey="id">
+                                    <ng-template pTemplate="caption">
+                                        Bon de Commandes
+                                    </ng-template>
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th pSortableColumn="code"><div class="flex justify-content-center">Code<p-sortIcon field="code"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="amount"><div class="flex justify-content-center">Montant<p-sortIcon field="amount"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="limit"><div class="flex justify-content-center">Delais<p-sortIcon field="limit"></p-sortIcon></div>
+                                            </th>
+                                            <th pSortableColumn="startDate"><div class="flex justify-content-center">Date Debut Travaux<p-sortIcon field="startDate"></p-sortIcon></div>
+                                            </th>
+                                            <th><div class="flex justify-content-center"></div>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-purchaseOrder>
+                                        <tr>
+                                            <td style="width:10%; min-width:2rem;">
+                                                <span class="p-column-title">Code</span>
+                                                <div class="flex justify-content-center">{{purchaseOrder?.code}}</div>
+                                              </td>
+                                              <td style="width:20%; min-width:10rem;">
+                                                <span class="p-column-title">Montant</span>
+                                                <div class="flex justify-content-center">{{purchaseOrder?.amount}}</div>
+                                              </td>
+                                              <td style="width:15%; min-width:10rem;">
+                                                  <span class="p-column-title">Delais</span>
+                                                  <div class="flex justify-content-center">{{purchaseOrder?.limit}}</div>
+                                              </td>
+                                              <td style="width:30%; min-width:10rem;">
+                                                  <span class="p-column-title">Date Debut Travaux</span>
+                                                  <div class="flex justify-content-center">{{purchaseOrder?.startDate | date:'dd/LL/yyyy'}}</div>
+                                              </td>
+                                              <td style="width:30%; min-width:10rem;">
+                                                  <span class="p-column-title"></span>
+                                                  <div class="flex justify-content-center"><button (click)="openPurchaseOrdersDialog(market, purchaseOrder)" pButton pRipple type="button" label="Voir"
+                                                    icon="pi pi-eye" class="p-button-raised p-button-text p-button-plain p-button-success"></button></div>
+                                              </td> 
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td colspan="6">Aucun Bon de Commande trouvé.</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabView>
+</div>
+

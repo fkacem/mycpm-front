@@ -1,0 +1,81 @@
+h1{
+    background-color: grey;
+    padding:20px;
+    color: rgba(95, 82, 82, 0.918);
+    font-family: sans-serif;
+}
+.card {
+    /* Add shadows to create the "card" effect */
+    margin-top: 9px;
+    box-shadow: 0 4px 8px 0 whitesmoke;
+    transition: 0.3s;
+    background-color: white;
+    height:300px;
+    width: 250px;
+    border-style: solid;
+    border-top-color: rgb(14, 125, 158);
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+/* Add some padding inside the card container */
+.container {
+    padding: 2px 16px;
+}
+.pad{
+    padding:20px;
+
+}
+.btn {
+    position: absolute;
+    top: 56%;
+    left:9.61%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: #555;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn1 {
+    position: absolute;
+    top: 62%;
+    left:9.61%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: rgb(9, 126, 9);
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+  }
+  .tab{
+    border-style: solid;
+    border-top-color: rgb(14, 125, 158);
+    border-right-color: white;
+    border-bottom-color: white;
+    border-left-color: white; 
+  }
+  label { color: rgb(14, 125, 158); font-weight: bold;} 
+  h3{
+    display: inline;
+}
+.col2{
+    text-align: left;
+    margin-left: 20%;
+}
+.gt{
+    color:green;
+}
+.ui-p-tabview-title{       
+    color:green !important; 
+}
