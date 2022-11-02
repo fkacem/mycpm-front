@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://mycpm-366513.nw.r.appspot.com/'
+  apiUrl: 'https://mycpm-backend-juaia7tqna-ew.a.run.app'
 };

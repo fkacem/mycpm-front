@@ -1,0 +1,14 @@
+runtime: nodejs16
+
+instance_class: F2
+
+env_variables: 
+  BUCKET_NAME: "cpmfront-bucket"
+
+handlers:
+- url: /
+  static_files: dist/management-frontend/index.html
+  upload: dist/management-frontend/index.html
+
+- url: /
+  static_dir: dist/management-frontend
